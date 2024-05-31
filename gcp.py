@@ -52,6 +52,7 @@ while True:
         packet,(rev_add,rev_port) = sender_socket.recvfrom(BUFF_SIZE)
         #print("I recieved the frame")
         print(f"address = {rev_add}, port = {rev_port}")
+        reciever_socket_address = ("192.168.0.239",12345)
         reciever_socket.sendto(packet,reciever_socket_address)
         #print("I sent the frame")
     elif sender_available:
