@@ -9,12 +9,14 @@ BUFF_SIZE = 65536
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
-#host_ip = socket.gethostbyname(host_name)
+host_ip_reciever = socket.gethostbyname(host_name)
 host_ip = "192.168.0.178"
 print(host_ip)
 port = 9696
 
+#client_socket.bind((host_ip_reciever,port))
 client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
+
 fps,st,frames_to_count,cnt = (0,0,20,0)
 while True:
     packet,(add,pt) = client_socket.recvfrom(BUFF_SIZE)
