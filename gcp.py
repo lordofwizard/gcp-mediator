@@ -7,8 +7,9 @@ BUFF_SIZE = 65536
 
 
 host_name = socket.gethostname()
-#host_ip = socket.gethostbyname(host_name)
-host_ip = ("192.168.0.178", "6969")
+host_ip = socket.gethostbyname(host_name)
+host_ip = "192.168.0.178"
+#host_ip = ("192.168.0.178", "6969")
 print(host_ip)
 
 
