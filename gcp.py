@@ -39,6 +39,8 @@ try:
     msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
     print('GOT connection from ',reciever_addr)
     reciever_available = True
+except socket.timeout:
+    print("First initialization failed on it's face, running the loop now")
 except Exception as e:
     print("Initialization time failed, running new loop" + " " + e)
 
