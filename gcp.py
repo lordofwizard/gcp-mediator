@@ -51,9 +51,8 @@ while True:
         #print("I got both")
         packet,(rev_add,rev_port) = sender_socket.recvfrom(BUFF_SIZE)
         #print("I recieved the frame")
-        reciever = (rev_add,rev_port)
         print(f"address = {rev_add}, port = {rev_port}")
-        reciever_socket.sendto(packet,reciever)
+        reciever_socket.sendto(packet,reciever_socket_address)
         #print("I sent the frame")
     elif sender_available:
         print("Sender available but reciever not available!")
