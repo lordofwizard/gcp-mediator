@@ -13,32 +13,34 @@ host_ip = "192.168.0.178"
 print(host_ip)
 
 
-
-sender_port = 6969
-sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-sender_socket_address = (host_ip,sender_port)
-sender_socket.bind(sender_socket_address)
-sender_socket.settimeout(10)
-
-print('Listening at:',sender_socket_address)
-
-
-msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
-print('GOT connection from ',sender_addr)
-sender_available = True
-
-reciever_port = 9696
-reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-reciever_socket_address = (host_ip,reciever_port)
-reciever_socket.bind(reciever_socket_address)
-reciever_socket.settimeout(10)
-
-
-msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
-print('GOT connection from ',reciever_addr)
-reciever_available = True
+try:
+    sender_port = 6969
+    sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
+    sender_socket_address = (host_ip,sender_port)
+    sender_socket.bind(sender_socket_address)
+    sender_socket.settimeout(10)
+    
+    print('Listening at:',sender_socket_address)
+    
+    
+    msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
+    print('GOT connection from ',sender_addr)
+    sender_available = True
+    
+    reciever_port = 9696
+    reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
+    reciever_socket_address = (host_ip,reciever_port)
+    reciever_socket.bind(reciever_socket_address)
+    reciever_socket.settimeout(10)
+    
+    
+    msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
+    print('GOT connection from ',reciever_addr)
+    reciever_available = True
+except Exception as e:
+    print("Initialization time failed, running new loop" + " " + e)
 
 while True:
     if sender_available == True and reciever_available == True:

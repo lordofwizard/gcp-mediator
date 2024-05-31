@@ -20,9 +20,12 @@ mediator = (mediator_address, 6969)
 vid = cv2.VideoCapture(0)
 fps,st,frames_to_count,cnt = (0,0,20,0)
 
+messageACK = "heyy".encode()
+server_socket.sendto(messageACK, mediator) 
+print("Message sent btw")
+
+
 while True:
-    messageACK = "heyy".encode()
-    server_socket.sendto(messageACK, mediator) 
     WIDTH=1640
     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
     while(vid.isOpened()):
