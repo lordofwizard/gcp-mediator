@@ -15,7 +15,7 @@ print(host_ip)
 sender_port = 6969
 sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-sender_socket.bind(socket_address)
+sender_socket.bind(host_ip)
 sender_socket_address = (host_ip,sender_port)
 sender_socket.settimeout(10)
 
@@ -29,7 +29,7 @@ sender_available = True
 reciever_port = 9696
 reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-reciever_socket.bind(socket_address)
+reciever_socket.bind(host_ip)
 reciever_socket_address = (host_ip,reciever_port)
 reciever_socket.settimeout(10)
 
