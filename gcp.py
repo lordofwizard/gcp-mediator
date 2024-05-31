@@ -48,8 +48,11 @@ except Exception as e:
 
 while True:
     if sender_available == True and reciever_available == True:
+        print("I got both")
         packet,_ = sender_socket.recvfrom(BUFF_SIZE)
+        print("I recieved the frame")
         reciever_socket.sendto(packet,reciever_socket_address)
+        print("I sent the frame")
     elif sender_available:
         print("Sender available but reciever not available!")
         try:
