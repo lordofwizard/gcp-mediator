@@ -58,6 +58,7 @@ while True:
         print("Sender available but reciever not available!")
         try:
             msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
+            reciever_socket_address = reciever_addr
             print('GOT connection from ',reciever_addr)
             reciever_available = True
         except socket.timeout:
@@ -77,6 +78,7 @@ while True:
     else:
         try:
             msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
+            reciever_socket_address = reciever_addr
             print('GOT connection from ',reciever_addr)
             reciever_available = True
         except socket.timeout:
