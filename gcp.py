@@ -71,5 +71,21 @@ while True:
         except Exception as e:
             print(f"Exception occured as {e}")
     else:
+        try:
+            msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
+            print('GOT connection from ',reciever_addr)
+            reciever_available = True
+        except socket.timeout:
+            print("Socket for Reciever Timedout")
+        except Exception as e:
+            print(f"Exception occured as {e}")
+        try:
+            msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
+            print('GOT connection from ',sender_addr)
+            sender_available = True
+        except socket.timeout:
+            print("Socket for sender Timedout")
+        except Exception as e:
+            print(f"Exception occured as {e}")
         print("BOTH AINT AVAILABLE")
 
