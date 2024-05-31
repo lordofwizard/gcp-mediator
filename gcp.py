@@ -12,33 +12,35 @@ host_ip = "192.168.0.178"
 #host_ip = ("192.168.0.178", "6969")
 print(host_ip)
 
+sender_available = False
+reciever_available = False
+sender_port = 6969
+sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
+sender_socket_address = (host_ip,sender_port)
+sender_socket.bind(sender_socket_address)
+sender_socket.settimeout(10)
 
+print('Listening at:',sender_socket_address)
+    
+    
+reciever_port = 9696
+reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
+reciever_socket_address = (host_ip,reciever_port)
+reciever_socket.bind(reciever_socket_address)
+reciever_socket.settimeout(10)
+    
+    
 try:
-    sender_port = 6969
-    sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-    sender_socket_address = (host_ip,sender_port)
-    sender_socket.bind(sender_socket_address)
-    sender_socket.settimeout(10)
-    
-    print('Listening at:',sender_socket_address)
-    
-    
     msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
     print('GOT connection from ',sender_addr)
     sender_available = True
     
-    reciever_port = 9696
-    reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-    reciever_socket_address = (host_ip,reciever_port)
-    reciever_socket.bind(reciever_socket_address)
-    reciever_socket.settimeout(10)
-    
-    
     msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
     print('GOT connection from ',reciever_addr)
     reciever_available = True
+
 except socket.timeout:
     print("First initialization failed on it's face, running the loop now")
 except Exception as e:
