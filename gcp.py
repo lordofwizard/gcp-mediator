@@ -84,7 +84,8 @@ def reciever_thread_func(robot_name : str):
     global sender_available
     global sender_socket
     global reciever_port
-    broadcast_address = ('<broadcast>', reciever_port)
+    global reciever_socket_address
+    print(reciever_socket_address, "reciever socket address")
     """
     This Function is used as thread function, which
     will check iteration after iteration, if we are sending
@@ -93,9 +94,13 @@ def reciever_thread_func(robot_name : str):
     while True:
         if sender_available == True:
             frame,(sender_ip_at_recv,sender_port_at_recv) = sender_socket.recvfrom(BUFF_SIZE)
-            reciever_socket.sendto(frame)
+            reciever_socket.sendto(frame,reciever_socket_address)
+            print("frame sent")
         else:
             time.sleep(1)
 
 sender = threading.Thread(target=sender_thread_func, args=["TortoiseBot"])
 sender.start()
+
+reciever = threading.Thread(target=reciever_thread_func, args=["TortoiseBot"])
+reciever.start()
