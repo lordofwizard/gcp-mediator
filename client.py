@@ -6,26 +6,23 @@ import time
 import base64
 
 BUFF_SIZE = 65536
+
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, BUFF_SIZE)
 host_name = socket.gethostname()
-host_ip_reciever = socket.gethostbyname(host_name)
-print(host_ip_reciever)
-#host_ip = "192.168.0.178"
-#host_ip = "34.47.151.112"
-#host_ip = "34.100.142.237"
-#print(host_ip)
+host_ip_reciever = "34.100.142.237"
 port = 9696
 
-client_socket.bind((host_ip_reciever,port))
-#client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
+client_socket.connect((host_ip_reciever,port))
 
+client_socket.settimeout(5)
 fps,st,frames_to_count,cnt = (0,0,20,0)
+
 while True:
     packet,(add,pt) = client_socket.recvfrom(BUFF_SIZE)
-    print(f"add={add},pt={pt}")
-    if packet:
-        print("frame recieverd")
+    #print(f"add={add},pt={pt}")
+    #if packet:
+        #print("frame recieverd")
     data = base64.b64decode(packet,' /')
     npdata = np.fromstring(data,dtype=np.uint8)
     frame = cv2.imdecode(npdata,1)
