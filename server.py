@@ -15,9 +15,12 @@ port = 9999
 socket_address = (host_ip,port)
 #server_socket.bind(socket_address)
 #print('Listening at:',socket_address)
-mediator_address = "192.168.0.178"
+#mediator_address = "192.168.0.178"
+#mediator_address = "34.47.151.112"
+mediator_address = "34.100.142.237"
+
 mediator = (mediator_address, 6969)
-vid = cv2.VideoCapture(0)
+vid = cv2.VideoCapture(2)
 fps,st,frames_to_count,cnt = (0,0,20,0)
 
 messageACK = "heyy".encode()
@@ -26,7 +29,7 @@ print("Message sent btw")
 
 
 while True:
-    WIDTH=1640
+    WIDTH=1500
     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 10]
     while(vid.isOpened()):
         _,frame = vid.read()

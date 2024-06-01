@@ -10,7 +10,9 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
 host_ip_reciever = socket.gethostbyname(host_name)
-host_ip = "192.168.0.178"
+#host_ip = "192.168.0.178"
+#host_ip = "34.47.151.112"
+host_ip = "34.100.142.237"
 print(host_ip)
 port = 9696
 
