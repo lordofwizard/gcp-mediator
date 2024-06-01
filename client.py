@@ -16,8 +16,8 @@ host_ip = "34.100.142.237"
 print(host_ip)
 port = 9696
 
-client_socket.bind(("192.168.0.239",12345))
-client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
+client_socket.bind((host_ip_reciever,port))
+#client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
 
 fps,st,frames_to_count,cnt = (0,0,20,0)
 while True:

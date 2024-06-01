@@ -10,6 +10,7 @@ server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
 host_ip = socket.gethostbyname(host_name)
 #host_ip = "192.168.0.178"
+mediator_address = host_ip
 print(host_ip)
 port = 9999
 socket_address = (host_ip,port)
@@ -17,10 +18,10 @@ socket_address = (host_ip,port)
 #print('Listening at:',socket_address)
 #mediator_address = "192.168.0.178"
 #mediator_address = "34.47.151.112"
-mediator_address = "34.100.142.237"
+#mediator_address = "34.100.142.237"
 
 mediator = (mediator_address, 6969)
-vid = cv2.VideoCapture(2)
+vid = cv2.VideoCapture(0)
 fps,st,frames_to_count,cnt = (0,0,20,0)
 
 messageACK = "heyy".encode()

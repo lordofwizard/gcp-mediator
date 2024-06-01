@@ -1,100 +1,101 @@
+# This is a RigBetel Labs LLP Product.
+# This Script is a Mediator server which allows you 
+# Send / transmit the data over the internet to your 
+# client devices. Uses OpenCV and imutils with udp
+# Tunnels to achieve this.
+# 
+# Author - lordofwizard 
+# Aka - Advait Pandharpurkar
+
 import cv2, imutils, socket
 import numpy as np
 import time
 import base64
+import time
+import threading
 
+# Fixed Maximum Buffer Size
 BUFF_SIZE = 65536
+SOCKET_TIMEOUT_SEC = 10
+SOCKET_CHECK_ITERATION = 30
 
-
-host_name = socket.gethostname()
-host_ip = socket.gethostbyname(host_name)
-#host_ip = "192.168.0.178"
-#host_ip = ("192.168.0.178", "6969")
-print(host_ip)
-
+# Sender global bool
 sender_available = False
-reciever_available = False
+
+mediator_hostname = socket.gethostname()
+mediator_ip_tuple = socket.gethostbyname(mediator_hostname)
+mediator_ip = mediator_ip_tuple[0]
+
+# Sender Socket Initialization
 sender_port = 6969
 sender_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 sender_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-sender_socket_address = (host_ip,sender_port)
+sender_socket_address = (mediator_ip_tuple,sender_port)
 sender_socket.bind(sender_socket_address)
-sender_socket.settimeout(10)
+sender_socket.settimeout(SOCKET_TIMEOUT_SEC)
+sender_credentails = ("",0)
 
-client_address = None
 
-print('Listening at:',sender_socket_address)
-    
-    
+# Client Global Object
+class Client:
+    ip = ""
+    port = ""
+    ack_time = "" # LAST ACK TIME
+
+    def __init__(self):
+        self.ip = ""
+        self.port = ""
+        self.ack_time = ""
+        print("Client Initialized")
+
+def sender_thread_func(robot_name : str):
+    """
+    This Function is used as thread function, which
+    will check iteration after iteration, if we are getting
+    the Video feed or not. 
+    """
+    global sender_credentails
+    global sender_socket
+    global sender_available
+
+    print(f"Starting a process for {robot_name}")
+    while True:
+        try:
+            msg,sender_credentails = sender_socket.recvfrom(BUFF_SIZE)
+            print('Recieved Video Stream Connection from',sender_credentails,"for",robot_name)
+            sender_available = True
+        except socket.timeout:
+            sender_available = False
+            pass
+        except Exception as e:
+            sender_available = False
+            print("Error : Stream Recieve Error",e)
+        time.sleep(SOCKET_CHECK_ITERATION)
+
 reciever_port = 9696
-reciever_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-reciever_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-reciever_socket_address = (host_ip,reciever_port)
-reciever_socket.bind(reciever_socket_address)
-reciever_socket.settimeout(10)
-    
-    
-try:
-    msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
-    print('GOT connection from ',sender_addr)
-    sender_available = True
-    
-    msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
-    reciever_socket_address = reciever_addr
-    print('GOT connection from ',reciever_addr)
-    reciever_available = True
+reciever_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+reciever_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, BUFF_SIZE)
+reciever_socket_address = (mediator_ip_tuple,reciever_port)
+#reciever_socket.bind(reciever_socket_address)
+reciever_socket.settimeout(SOCKET_TIMEOUT_SEC)
 
-except socket.timeout:
-    print("First initialization failed on it's face, running the loop now")
-except Exception as e:
-    print("Initialization time failed, running new loop" + " " + e)
+def reciever_thread_func(robot_name : str):
+    global reciever_socket
+    global sender_available
+    global sender_socket
+    global reciever_port
+    broadcast_address = ('<broadcast>', reciever_port)
+    """
+    This Function is used as thread function, which
+    will check iteration after iteration, if we are sending
+    the Video feed or not. 
+    """
+    while True:
+        if sender_available == True:
+            frame,(sender_ip_at_recv,sender_port_at_recv) = sender_socket.recvfrom(BUFF_SIZE)
+            reciever_socket.sendto(frame)
+        else:
+            time.sleep(1)
 
-while True:
-    if sender_available == True and reciever_available == True:
-        #print("I got both")
-        packet,(rev_add,rev_port) = sender_socket.recvfrom(BUFF_SIZE)
-        #print("I recieved the frame")
-        print(f"address = {rev_add}, port = {rev_port}")
-        reciever_socket.sendto(packet,reciever_socket_address)
-        #print("I sent the frame")
-    elif sender_available:
-        print("Sender available but reciever not available!")
-        try:
-            msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
-            reciever_socket_address = reciever_addr
-            print('GOT connection from ',reciever_addr)
-            reciever_available = True
-        except socket.timeout:
-            print("Socket for Reciever Timedout")
-        except Exception as e:
-            print(f"Exception occured as {e}")
-    elif reciever_available:
-        print("Reciever available but not data recieved.")
-        try:
-            msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
-            print('GOT connection from ',sender_addr)
-            sender_available = True
-        except socket.timeout:
-            print("Socket for sender Timedout")
-        except Exception as e:
-            print(f"Exception occured as {e}")
-    else:
-        try:
-            msg,reciever_addr = reciever_socket.recvfrom(BUFF_SIZE)
-            reciever_socket_address = reciever_addr
-            print('GOT connection from ',reciever_addr)
-            reciever_available = True
-        except socket.timeout:
-            print("Socket for Reciever Timedout")
-        except Exception as e:
-            print(f"Exception occured as {e}")
-        try:
-            msg,sender_addr = sender_socket.recvfrom(BUFF_SIZE)
-            print('GOT connection from ',sender_addr)
-            sender_available = True
-        except socket.timeout:
-            print("Socket for sender Timedout")
-        except Exception as e:
-            print(f"Exception occured as {e}")
-        print("BOTH AINT AVAILABLE")
-
+sender = threading.Thread(target=sender_thread_func, args=["TortoiseBot"])
+sender.start()
