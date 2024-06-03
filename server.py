@@ -11,7 +11,7 @@ server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 #host_ip = socket.gethostbyname(host_name)
 #mediator_address = host_ip
 
-mediator_address = "0.0.0.0" # Change this to your mediator
+mediator_address = "34.100.240.175" # Change this to your mediator
 
 
 

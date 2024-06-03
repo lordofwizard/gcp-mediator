@@ -94,7 +94,11 @@ def request_thread(robot_name : str):
             data, addr = reciever_socket.recvfrom(BUFF_SIZE)
             print("Received message:", data.decode(), "from", addr)
             current_time = int(time.time())
-            new_client = Client(ip=addr[0], port=addr[1], ack_time=current_time)
+            new_client = Client()
+            new_client.ip = addr[0]
+            new_client.port = addr[1]
+            new_client.ack_time = current_time
+            
             CONNECTIONS.append(new_client) 
             time.sleep(1)
         except socket.timeout:
