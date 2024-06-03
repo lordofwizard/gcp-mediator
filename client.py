@@ -4,20 +4,28 @@ import cv2, imutils, socket
 import numpy as np
 import time
 import base64
+import struct
 
 BUFF_SIZE = 65536
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
+host_ip = "34.100.240.175"
+
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,  socket.IPPROTO_UDP)
+interface = socket.INADDR_ANY
+mreq = struct.pack('=4s4s', socket.inet_aton(host_ip), struct.pack('@I', interface))
+print(type(mreq))
+client_socket.setsockopt(socket.IPPROTO_IP, socket.SO_RCVBUF, mreq)
+
+#client_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
 host_name = socket.gethostname()
 host_ip_reciever = socket.gethostbyname(host_name)
 #host_ip = "192.168.0.178"
 #host_ip = "34.47.151.112"
-host_ip = "34.100.142.237"
 print(host_ip)
 port = 9696
 
-client_socket.bind((host_ip_reciever,port))
+client_socket.bind(("",port))
 #client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
+client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)
 
 fps,st,frames_to_count,cnt = (0,0,20,0)
 while True:
