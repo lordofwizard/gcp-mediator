@@ -90,12 +90,17 @@ def request_thread(robot_name : str):
     reciever_socket.bind((mediator_ip_tuple,reciever_port))
 
     while True:
-        data, addr = reciever_socket.recvfrom(BUFF_SIZE)
-        print("Received message:", data.decode(), "from", addr)
-        current_time = int(time.time())
-        new_client = Client(ip=addr[0], port=addr[1], ack_time=current_time)
-        CONNECTIONS.append(new_client) 
-        time.sleep(1)
+        try:
+            data, addr = reciever_socket.recvfrom(BUFF_SIZE)
+            print("Received message:", data.decode(), "from", addr)
+            current_time = int(time.time())
+            new_client = Client(ip=addr[0], port=addr[1], ack_time=current_time)
+            CONNECTIONS.append(new_client) 
+            time.sleep(1)
+        except socket.timeout:
+            pass
+        except Exception as e:
+            print("Error Occured while sending data " + e)
 
 
 def reciever_thread_func(robot_name : str):
