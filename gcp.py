@@ -98,7 +98,7 @@ def request_thread(robot_name : str):
             new_client.ip = addr[0]
             new_client.port = addr[1]
             new_client.ack_time = current_time
-            
+
             CONNECTIONS.append(new_client) 
             time.sleep(1)
         except socket.timeout:
@@ -126,7 +126,7 @@ def reciever_thread_func(robot_name : str):
                 #reciever_socket.sendto(frame,reciever_socket_address)
                 for item in CONNECTIONS:
                     reciever_socket.sendto(frame,(item.ip,item.port))
-                print("frame sent")
+                #print("frame sent")
             else:
                 time.sleep(1)
         except socket.timeout:
