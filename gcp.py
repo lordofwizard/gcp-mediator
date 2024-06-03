@@ -111,14 +111,19 @@ def reciever_thread_func(robot_name : str):
     the Video feed or not. 
     """
     while True:
-        if sender_available == True:
-            frame,(sender_ip_at_recv,sender_port_at_recv) = sender_socket.recvfrom(BUFF_SIZE)
-            #reciever_socket.sendto(frame,reciever_socket_address)
-            for item in CONNECTIONS:
-                reciever_socket.sendto(frame,(item.ip,item.port))
-            print("frame sent")
-        else:
-            time.sleep(1)
+        try:
+            if sender_available == True:
+                frame,(sender_ip_at_recv,sender_port_at_recv) = sender_socket.recvfrom(BUFF_SIZE)
+                #reciever_socket.sendto(frame,reciever_socket_address)
+                for item in CONNECTIONS:
+                    reciever_socket.sendto(frame,(item.ip,item.port))
+                print("frame sent")
+            else:
+                time.sleep(1)
+        except socket.timeout:
+            pass
+        except Exception as e:
+            print("Error Occured while sending data " + e)
 
 sender = threading.Thread(target=sender_thread_func, args=["TortoiseBot"])
 sender.start()
