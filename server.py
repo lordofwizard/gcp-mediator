@@ -7,18 +7,13 @@ import base64
 BUFF_SIZE = 65536
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 server_socket.setsockopt(socket.SOL_SOCKET,socket.SO_RCVBUF,BUFF_SIZE)
-host_name = socket.gethostname()
-host_ip = socket.gethostbyname(host_name)
-#host_ip = "192.168.0.178"
-mediator_address = host_ip
-print(host_ip)
-port = 9999
-socket_address = (host_ip,port)
-#server_socket.bind(socket_address)
-#print('Listening at:',socket_address)
-#mediator_address = "192.168.0.178"
-#mediator_address = "34.47.151.112"
-#mediator_address = "34.100.142.237"
+
+#host_ip = socket.gethostbyname(host_name)
+#mediator_address = host_ip
+
+mediator_address = "0.0.0.0" # Change this to your mediator
+
+
 
 mediator = (mediator_address, 6969)
 vid = cv2.VideoCapture(0)

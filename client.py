@@ -7,6 +7,7 @@ import base64
 import struct
 
 BUFF_SIZE = 65536
+
 host_ip = "34.100.240.175"
 
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM,  socket.IPPROTO_UDP)
@@ -27,12 +28,15 @@ client_socket.bind(("",port))
 #client_socket.sendto("heyyyyyyy".encode(),(host_ip,port))
 client_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 65536)
 
+
+client_socket.settimeout(5)
 fps,st,frames_to_count,cnt = (0,0,20,0)
+
 while True:
     packet,(add,pt) = client_socket.recvfrom(BUFF_SIZE)
-    print(f"add={add},pt={pt}")
-    if packet:
-        print("frame recieverd")
+    #print(f"add={add},pt={pt}")
+    #if packet:
+        #print("frame recieverd")
     data = base64.b64decode(packet,' /')
     npdata = np.fromstring(data,dtype=np.uint8)
     frame = cv2.imdecode(npdata,1)
