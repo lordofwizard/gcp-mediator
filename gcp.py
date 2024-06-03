@@ -19,6 +19,9 @@ BUFF_SIZE = 65536
 SOCKET_TIMEOUT_SEC = 10
 SOCKET_CHECK_ITERATION = 30
 
+# All client object array
+CONNECTIONS = []
+
 # Sender global bool
 sender_available = False
 
@@ -79,6 +82,22 @@ reciever_socket_address = (mediator_ip_tuple,reciever_port)
 #reciever_socket.bind(reciever_socket_address)
 reciever_socket.settimeout(SOCKET_TIMEOUT_SEC)
 
+def request_thread(robot_name : str):
+    global reciever_socket, reciever_port
+    global mediator_ip_tuple
+    global CONNECTIONS
+
+    reciever_socket.bind((mediator_ip_tuple,reciever_port))
+
+    while True:
+        data, addr = reciever_socket.recvfrom(BUFF_SIZE)
+        print("Received message:", data.decode(), "from", addr)
+        current_time = int(time.time())
+        new_client = Client(ip=addr[0], port=addr[1], ack_time=current_time)
+        CONNECTIONS.append(new_client) 
+        time.sleep(1)
+
+
 def reciever_thread_func(robot_name : str):
     global reciever_socket
     global sender_available
@@ -94,7 +113,9 @@ def reciever_thread_func(robot_name : str):
     while True:
         if sender_available == True:
             frame,(sender_ip_at_recv,sender_port_at_recv) = sender_socket.recvfrom(BUFF_SIZE)
-            reciever_socket.sendto(frame,reciever_socket_address)
+            #reciever_socket.sendto(frame,reciever_socket_address)
+            for item in CONNECTIONS:
+                reciever_socket.sendto(frame,(item.ip,item.port))
             print("frame sent")
         else:
             time.sleep(1)
@@ -105,3 +126,5 @@ sender.start()
 reciever = threading.Thread(target=reciever_thread_func, args=["TortoiseBot"])
 reciever.start()
 
+request = threading.Thread(target=request_thread, args=["TortoiseBot"])
+request.start()
